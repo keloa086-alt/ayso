@@ -1,0 +1,1770 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1c1c1c" />
+<title>ayso.ai</title>
+<style>
+  :root{
+    --bg:#1c1c1c;
+    --panel:#262626;
+    --panel-2:#2e2e2e;
+    --line:#333;
+    --line-soft:#2a2a2a;
+    --txt:#e8e8e8;
+    --dim:#8a8a8a;
+    --dim-2:#6b6b6b;
+    --ok:#4ade80;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    background:var(--bg);color:var(--txt);
+    font-family:"Segoe UI",system-ui,-apple-system,Tahoma,sans-serif;
+    font-size:15px;-webkit-font-smoothing:antialiased;overflow:hidden;
+  }
+  .app{display:flex;flex-direction:column;height:100dvh;max-width:780px;margin:0 auto;position:relative}
+
+  /* ══ top bar ══ */
+  .top{flex:0 0 auto;display:flex;align-items:center;gap:4px;padding:10px 12px;min-height:52px}
+  .icobtn.act{color:#e8a95e;background:rgba(201,119,43,.16)}
+  .icobtn{
+    width:38px;height:38px;border:0;background:transparent;border-radius:10px;
+    color:#b5b5b5;cursor:pointer;display:grid;place-items:center;transition:background .15s,color .15s;
+  }
+  .icobtn:hover{background:rgba(255,255,255,.06);color:#ececec}
+  .icobtn:active{background:rgba(255,255,255,.1)}
+  .icobtn svg{width:20px;height:20px;display:block}
+  .spacer{flex:1}
+
+  /* ══ main ══ */
+  main{flex:1 1 auto;overflow-y:auto;scrollbar-width:none;position:relative}
+  main::-webkit-scrollbar{display:none}
+
+  /* ══ hero ══ */
+  /* ══ الترحيب ══ */
+  /* ══ مؤشر التفكير ══ */
+  .thk{display:inline-flex;align-items:center;gap:9px;color:#9c9c9c;font-size:15px;
+    padding:6px 0;user-select:none}
+  .thk svg:first-child{width:19px;height:19px;flex:0 0 auto;opacity:.85;
+    animation:thkPulse 2s ease-in-out infinite}
+  .thk .ch{width:14px;height:14px;opacity:.55}
+  @keyframes thkPulse{0%,100%{opacity:.85}50%{opacity:.45}}
+  .thk span{letter-spacing:.2px}
+
+  /* ══ لوحة الوضع ══ */
+  .ap-row{display:flex;align-items:flex-start;gap:12px;margin:4px 14px 10px;padding:14px;
+    border-radius:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
+  .ap-row.on{background:rgba(120,170,255,.09);border-color:rgba(120,170,255,.28)}
+  .ap-ic{width:22px;height:22px;color:#9a9a9a;flex:0 0 auto;margin-top:1px}
+  .ap-ic svg{width:22px;height:22px;display:block}
+  .ap-row.on .ap-ic{color:#e8a95e}
+  .ap-tx{flex:1;min-width:0}
+  .ap-tt{font-size:13.5px;color:#ececec;font-weight:600}
+  .ap-dd{font-size:11.5px;color:#8b8b8b;margin-top:4px;line-height:1.5}
+  .ap-sw{flex:0 0 auto;width:44px;height:26px;border-radius:14px;border:0;cursor:pointer;
+    background:rgba(255,255,255,.13);position:relative;transition:background .2s;padding:0}
+  .ap-sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
+    background:#55575c;transition:transform .22s cubic-bezier(.3,0,.2,1),background .2s;display:block}
+  .ap-sw[aria-checked="true"]{background:#c9772b}
+  .ap-sw[aria-checked="true"] i{transform:translateX(18px);background:#fff}
+  .ap-note{font-size:11.5px;color:#7f7f7f;padding:0 20px 18px;line-height:1.6}
+
+  /* ══ لوحة المحادثات ══ */
+  .cvs{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);
+    display:flex;align-items:flex-end}
+  .cvs[hidden]{display:none}
+  .cvs-panel{width:100%;max-height:78dvh;background:#17171a;border-radius:18px 18px 0 0;
+    border-top:1px solid rgba(255,255,255,.09);display:flex;flex-direction:column;
+    animation:cvUp .26s cubic-bezier(.3,0,.2,1)}
+  @keyframes cvUp{from{transform:translateY(40px);opacity:.6}to{transform:translateY(0);opacity:1}}
+  .cvs-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px;
+    font-size:14px;color:#fff;font-weight:600}
+  .cvs-head button{background:none;border:0;color:#9a9a9a;font-size:24px;line-height:1;cursor:pointer;font-family:inherit}
+  .cvs-new{margin:0 14px 10px;padding:10px;border-radius:12px;font-family:inherit;font-size:13px;
+    color:#cfe4ff;background:rgba(120,170,255,.10);border:1px solid rgba(120,170,255,.22);cursor:pointer}
+  .cvs-new:hover{background:rgba(120,170,255,.18)}
+  .cvs-list{overflow-y:auto;padding:0 10px 18px}
+  .cvs-row{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;cursor:pointer}
+  .cvs-row:hover{background:rgba(255,255,255,.05)}
+  .cvs-row.on{background:rgba(120,170,255,.10)}
+  .cvs-row .tx{flex:1;min-width:0}
+  .cvs-row .tt{font-size:13.5px;color:#e9e9e9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cvs-row .dd{font-size:11px;color:#7d7d7d;margin-top:3px}
+  .cvs-row .del{background:none;border:0;color:#767676;font-size:17px;cursor:pointer;padding:4px 6px;font-family:inherit}
+  .cvs-row .del:hover{color:#e79a9a}
+  .cvs-empty{text-align:center;color:#7a7a7a;font-size:13px;padding:30px 10px}
+
+  .achip{display:flex;align-items:center;gap:8px;margin:0 14px 6px;padding:5px 10px;border-radius:10px;
+    background:rgba(120,170,255,.10);border:1px solid rgba(120,170,255,.22);
+    font-size:12px;color:#cfe4ff;width:fit-content;max-width:90%}
+  .achip button{background:none;border:0;color:#cfe4ff;font-size:16px;line-height:1;cursor:pointer;padding:0 2px;font-family:inherit}
+
+  .vfy{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 2px 2px}
+  .vfy .vok{font-size:12px;color:#7fcf9a;background:rgba(90,200,140,.10);border:1px solid rgba(90,200,140,.22);padding:3px 9px;border-radius:8px}
+  .vfy .vbad{font-size:12px;color:#e79a9a;background:rgba(230,120,120,.10);border:1px solid rgba(230,120,120,.22);padding:3px 9px;border-radius:8px}
+  .vfy .verr{font-size:11px;color:#d0a0a0;background:rgba(255,255,255,.04);padding:2px 6px;border-radius:6px;direction:ltr}
+  .vfy .vfix{font-size:11.5px;color:#cfe4ff;background:rgba(120,170,255,.12);border:1px solid rgba(120,170,255,.25);padding:3px 9px;border-radius:8px;cursor:pointer;font-family:inherit}
+  .vfy .vfix:hover{background:rgba(120,170,255,.2)}
+  .vfy .vok em{font-style:normal;color:#9fe0b4;font-family:ui-monospace,monospace;font-size:11px}
+  .vfy .vout{flex-basis:100%;margin:4px 0 0;padding:8px 10px;border-radius:8px;font-size:11.5px;
+    background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.09);color:#b6e3c4;
+    direction:ltr;text-align:left;white-space:pre-wrap;overflow-x:auto;font-family:ui-monospace,monospace}
+  .vfy .vout.bad{color:#e2a6a6;border-color:rgba(230,120,120,.28)}
+
+  .hero{
+    position:fixed;left:50%;top:50%;
+    transform:translate(-50%,-50%);
+    z-index:20;pointer-events:none;
+    padding:0 20px;
+    transition:top .46s cubic-bezier(.4,0,.2,1);
+    will-change:top;
+  }
+  .hero h1{
+    font-size:clamp(44px,13vw,72px);
+    font-weight:600;color:#ffffff;letter-spacing:-.5px;
+    direction:ltr;line-height:1.1;text-align:center;white-space:nowrap;
+    transform-origin:center center;
+    transition:transform .46s cubic-bezier(.4,0,.2,1),opacity .3s ease;
+    text-shadow:0 0 60px rgba(255,255,255,.08);
+  }
+  .hero h1 small{font-weight:300;color:#c8c8c8}
+
+  /* الحالة المثبّتة أعلى الشاشة */
+  .app.chat .hero{ top:calc(env(safe-area-inset-top,0px) + 30px) }
+  .app.chat .hero h1{ transform:scale(.26);text-shadow:none }
+  .app.chat .hero h1 small{ color:#b8b8b8 }
+  .app.chat .msgs{ padding-top:58px }
+
+  /* ══ messages ══ */
+  .msgs{display:flex;flex-direction:column;gap:22px;padding:16px 20px 24px}
+  .msgs:empty{display:none}
+  .msg{animation:fi .2s ease both}
+  @keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .msg.u{display:flex;justify-content:flex-start}
+  .msg.u .b{
+    background:#2b2b2b;border-radius:18px;border-end-start-radius:6px;
+    padding:11px 16px;max-width:84%;font-size:15px;line-height:1.7;
+    white-space:pre-wrap;word-break:break-word;
+  }
+  .msg.a .who{
+    font-size:11px;color:var(--dim-2);margin-bottom:7px;
+    direction:ltr;font-family:ui-monospace,monospace;letter-spacing:.4px;
+  }
+  .msg.a .bd{font-size:15px;line-height:1.85;word-break:break-word;color:#dcdcdc}
+  .msg.a .bd p{margin:10px 0}
+  .msg.a .bd p:first-child{margin-top:0}
+  .msg.a .bd strong{color:#fff;font-weight:600}
+  .msg.a .bd code{
+    background:#141414;padding:2px 6px;border-radius:5px;font-size:.86em;
+    direction:ltr;display:inline-block;font-family:ui-monospace,monospace;color:#9fb4f0;
+  }
+  .msg.a .bd pre{
+    background:#141414;border-radius:12px;padding:14px;overflow-x:auto;margin:12px 0;
+    direction:ltr;text-align:left;
+  }
+  .msg.a .bd pre code{background:none;padding:0;color:#c6cbd6;display:block;font-size:13px}
+  .msg.a .bd ul,.msg.a .bd ol{margin:10px 22px 10px 0}
+  .msg.a .bd li{margin:4px 0}
+  .msg.a .bd h1,.msg.a .bd h2,.msg.a .bd h3{margin:16px 0 8px;font-weight:600;line-height:1.4}
+  .msg.a .bd h1{font-size:19px}.msg.a .bd h2{font-size:17px}.msg.a .bd h3{font-size:15.5px}
+  .msg.a .bd blockquote{border-right:2px solid #444;padding:2px 12px;margin:10px 0;color:#a5a5a5}
+  .msg.a .bd hr{border:0;border-top:1px solid #333;margin:16px 0}
+  .cursor{display:inline-block;width:7px;height:15px;background:#8a8a8a;vertical-align:-2px;
+    border-radius:1px;animation:bl 1.05s steps(2) infinite;margin-inline-start:2px}
+  @keyframes bl{50%{opacity:0}}
+
+  /* ══ dock ══ */
+  .dock{flex:0 0 auto;padding:0 10px calc(10px + env(safe-area-inset-bottom))}
+
+  .composer{
+    background:var(--panel);border:1px solid var(--line-soft);
+    border-radius:24px;padding:14px 16px 12px;transition:border-color .18s;
+  }
+  .composer:focus-within{border-color:#3d3d3d}
+  textarea{
+    width:100%;min-height:26px;max-height:160px;resize:none;
+    background:transparent;border:0;outline:none;color:var(--txt);
+    font:inherit;font-size:15.5px;line-height:1.6;padding:2px 0;
+  }
+  textarea::placeholder{color:#6f6f6f}
+
+  .bar{display:flex;align-items:center;gap:4px;margin-top:10px}
+  .bar .spacer{flex:1}
+  .tool{
+    width:36px;height:36px;border:0;background:transparent;border-radius:9px;
+    color:#909090;cursor:pointer;display:grid;place-items:center;transition:.15s;flex:0 0 auto;
+  }
+  .tool:hover{background:rgba(255,255,255,.06);color:#d8d8d8}
+  .tool svg{width:19px;height:19px;display:block}
+
+  .model{
+    display:inline-flex;align-items:center;gap:6px;
+    background:transparent;border:0;border-radius:9px;
+    padding:7px 8px;color:#9a9a9a;cursor:pointer;
+    font:inherit;font-size:12.5px;flex:0 0 auto;transition:.15s;
+  }
+  .model:hover{background:rgba(255,255,255,.08);color:#ffffff}
+  .model svg{width:25px;height:25px;display:block;flex:0 0 auto;color:#ffffff}
+  .model .nm{direction:ltr;font-family:ui-monospace,monospace;font-size:11.5px;letter-spacing:.3px}
+  .model .cv{width:11px;height:11px;opacity:.6;transition:transform .18s}
+  .model.open .cv{transform:rotate(180deg)}
+
+  .send{
+    width:40px;height:40px;flex:0 0 auto;border-radius:11px;
+    border:1px solid #3a3a3a;background:transparent;color:#c4c4c4;
+    cursor:pointer;display:grid;place-items:center;transition:.16s;margin-inline-start:4px;
+  }
+  .send:hover:not(:disabled){background:#333;color:#fff;border-color:#4a4a4a}
+  .send:active:not(:disabled){background:#3a3a3a}
+  .send:disabled{opacity:.4;cursor:not-allowed}
+  .send svg{width:17px;height:17px;display:block}
+
+  .foot{text-align:center;font-size:10.5px;color:#5e5e5e;padding:9px 0 0;letter-spacing:.2px;direction:ltr}
+
+  /* ══ model sheet ══ */
+  .ov{
+    position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:50;
+    opacity:0;pointer-events:none;transition:opacity .2s;
+    display:flex;align-items:flex-end;justify-content:center;
+  }
+  .ov.on{opacity:1;pointer-events:auto}
+  .sheet{
+    width:100%;max-width:780px;background:#202020;
+    border:1px solid #2e2e2e;border-bottom:0;
+    border-radius:22px 22px 0 0;
+    padding:8px 14px calc(16px + env(safe-area-inset-bottom));
+    transform:translateY(14px);transition:transform .22s ease;
+  }
+  .ov.on .sheet{transform:none}
+  .grab{width:38px;height:4px;border-radius:99px;background:#3d3d3d;margin:6px auto 14px}
+  .sheet h3{font-size:13px;font-weight:600;color:#9e9e9e;padding:0 8px 10px;letter-spacing:.2px}
+
+  .mrow{
+    display:flex;align-items:center;gap:11px;
+    padding:12px 12px;border-radius:13px;cursor:pointer;
+    border:1px solid transparent;transition:.14s;background:transparent;
+    width:100%;text-align:right;font:inherit;color:inherit;
+  }
+  .mrow:hover{background:#282828;border-color:#333}
+  .mrow.sel{background:#2a2a2a;border-color:#3a3a3a}
+  .mrow .sico{
+    width:32px;height:32px;flex:0 0 auto;border-radius:9px;
+    background:#2e2e2e;display:grid;place-items:center;color:#b0b0b0;
+  }
+  .mrow.sel .sico{background:#3a3a3a;color:#fff}
+  .mrow .sico svg{width:23px;height:23px;display:block}
+  .mrow .mtxt{flex:1;min-width:0}
+  .mrow .mttl{font-size:13.5px;font-weight:600;color:#e4e4e4;direction:ltr;text-align:right;
+    font-family:ui-monospace,monospace;letter-spacing:.2px}
+  .mrow .msub{font-size:11px;color:#7a7a7a;margin-top:2px}
+  .mrow .chk{width:16px;height:16px;flex:0 0 auto;color:var(--ok);opacity:0}
+  .mrow.sel .chk{opacity:1}
+  .sheet .note{font-size:11px;color:#5f5f5f;padding:12px 8px 2px;line-height:1.6;text-align:center}
+
+  /* ══ دائرة انتظار (موج) ══ */
+  .wave{display:flex;align-items:center;justify-content:flex-start;padding:3px 0;height:20px}
+  .blob{
+    width:19px;height:19px;background:#ffffff;
+    animation: blobMorph 2.6s ease-in-out infinite, blobSpin 3.4s linear infinite;
+  }
+  @keyframes blobSpin{ to{ transform:rotate(360deg) } }
+  @keyframes blobMorph{
+    0%   { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50% }
+    16%  { border-radius: 58% 42% 45% 55% / 46% 58% 42% 54% }
+    32%  { border-radius: 42% 58% 62% 38% / 58% 41% 59% 42% }
+    48%  { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50% }
+    64%  { border-radius: 63% 37% 40% 60% / 41% 62% 38% 59% }
+    80%  { border-radius: 45% 55% 57% 43% / 60% 44% 56% 40% }
+    100% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50% }
+  }
+
+  .retry{display:inline-block;margin-top:9px;background:transparent;border:1px solid #3a3a3a;
+    border-radius:8px;color:#c9c9c9;font:inherit;font-size:12px;padding:6px 13px;cursor:pointer;transition:.15s}
+  .retry:hover{background:#2a2a2a;color:#fff;border-color:#4a4a4a}
+
+  /* ══ شريط تصدير الرد ══ */
+  .exp{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+  .exp button{display:inline-flex;align-items:center;gap:5px;background:transparent;
+    border:1px solid #333;border-radius:8px;color:#909090;font:inherit;font-size:11.5px;
+    padding:5px 10px;cursor:pointer;transition:.15s}
+  .exp button:hover{background:#262626;color:#fff;border-color:#4a4a4a}
+  .exp button svg{width:13px;height:13px;display:block}
+
+  /* ══ جداول ══ */
+  .tw{overflow-x:auto;margin:14px 0;border:1px solid #2f2f2f;border-radius:10px;-webkit-overflow-scrolling:touch}
+  .tw table{border-collapse:collapse;width:max-content;min-width:100%;font-size:13px}
+  .tw th,.tw td{padding:9px 13px;text-align:right;border-bottom:1px solid #262626;
+    border-left:1px solid #222;white-space:nowrap;vertical-align:top}
+  .tw th{background:#1e1e1e;color:#e8e8e8;font-weight:600;font-size:12.5px;
+    position:sticky;top:0;z-index:1}
+  .tw td{color:#c9c9c9}
+  .tw tr:last-child td{border-bottom:0}
+  .tw tbody tr:hover td{background:#1c1c1c}
+  .tw::-webkit-scrollbar{height:7px}
+  .tw::-webkit-scrollbar-thumb{background:#3a3a3a;border-radius:8px}
+  .tw::-webkit-scrollbar-track{background:transparent}
+
+  /* ══ صندوق الكود ══ */
+  .cbx{margin:14px 0;border:1px solid #2f2f2f;border-radius:12px;overflow:hidden;background:#141414}
+  .cbx .hd{display:flex;align-items:center;gap:8px;padding:7px 11px;background:#1b1b1b;
+    border-bottom:1px solid #2a2a2a}
+  .cbx .lang{font-size:10.5px;color:#7c7c7c;direction:ltr;font-family:ui-monospace,monospace;
+    letter-spacing:.4px;text-transform:lowercase}
+  .cbx .cbtn{margin-inline-start:auto;display:inline-flex;align-items:center;gap:5px;
+    background:transparent;border:1px solid #333;border-radius:7px;color:#9a9a9a;
+    font:inherit;font-size:11px;padding:4px 9px;cursor:pointer;transition:.15s}
+  .cbx .cbtn:hover{background:#262626;color:#ffffff;border-color:#4a4a4a}
+  .cbx .cbtn.ok{color:#4ade80;border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.08)}
+  .cbx .cbtn svg{width:12px;height:12px;display:block}
+  .msg.a .bd .cbx pre,
+  .cbx pre{margin:0;padding:0;overflow-x:auto;direction:ltr;text-align:left;
+    background:none;border:0;border-radius:0;font-size:0}
+  .msg.a .bd .cbx pre code,
+  .cbx pre code{
+    background:none;border:0;border-radius:0;padding:13px 14px;margin:0;
+    color:#d7dbe4;font-size:12.8px;display:block;width:max-content;min-width:100%;
+    line-height:1.7;white-space:pre;tab-size:4;
+    font-family:ui-monospace,Menlo,Consolas,"Courier New",monospace;
+    direction:ltr;text-align:left;unicode-bidi:isolate}
+
+  /* ══ ظهور ناعم للنص ══ */
+  .bd.reveal > *{ animation: riseIn .5s cubic-bezier(.2,.7,.2,1) both }
+  .bd.reveal > *:nth-child(1){ animation-delay:0s }
+  .bd.reveal > *:nth-child(2){ animation-delay:.07s }
+  .bd.reveal > *:nth-child(3){ animation-delay:.13s }
+  .bd.reveal > *:nth-child(4){ animation-delay:.19s }
+  .bd.reveal > *:nth-child(5){ animation-delay:.24s }
+  .bd.reveal > *:nth-child(n+6){ animation-delay:.29s }
+  @keyframes riseIn{
+    from{ opacity:0; transform:translateY(7px); filter:blur(2px) }
+    to  { opacity:1; transform:none;       filter:none }
+  }
+
+  /* toast */
+  .toast{
+    position:fixed;bottom:120px;left:50%;transform:translateX(-50%) translateY(16px);
+    background:#2e2e2e;border:1px solid #3d3d3d;color:#dcdcdc;font-size:12.5px;
+    padding:10px 18px;border-radius:11px;z-index:60;opacity:0;pointer-events:none;
+    transition:.24s;max-width:88vw;text-align:center;
+  }
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media(min-width:640px){
+    .dock{padding:0 18px 16px}
+    .msgs{padding:20px 26px 28px}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div id="pvbar" style="display:none;background:#3a2f12;color:#f0dc9a;font-size:11.5px;
+    line-height:1.6;padding:8px 12px;text-align:center;border-bottom:1px solid #574318">
+    ⚠️ أنت في <b>معاينة</b> — الحفظ والتنزيل معطّلان، والرسائل تروح عند التحديث.<br>
+    <b>نزّل الملف وافتحه في كروم</b> حتى يشتغل كل شي.
+  </div>
+
+  <div class="top">
+    <button class="icobtn" id="btnMenu" aria-label="القائمة">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+        <rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9 4v16"/>
+      </svg>
+    </button>
+    <div class="spacer"></div>
+    <button class="icobtn" id="btnNew" aria-label="محادثة جديدة">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+    </button>
+  </div>
+
+  <main id="main">
+    <div class="hero" id="hero"><h1>ayso<small>.ai</small></h1></div>
+    <div class="msgs" id="msgs"></div>
+  </main>
+
+  <div class="dock">
+    <form class="composer" id="form">
+      <textarea id="input" rows="1" placeholder="Ask anything..." autocomplete="off"></textarea>
+
+      <div class="bar">
+        <button type="button" class="tool" id="btnApps" aria-label="التطبيقات">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <rect x="3.5" y="3.5" width="6.5" height="6.5" rx="2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="2"/>
+            <rect x="3.5" y="14" width="6.5" height="6.5" rx="2"/><rect x="14" y="14" width="6.5" height="6.5" rx="2"/>
+          </svg>
+        </button>
+
+        <button type="button" class="model" id="modelBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13.33 17.93 11.6 16.37 9.98 14.65 8.46 12.78 7.05 10.77 5.68 8.49 4.49 6.17 3.43 3.71 3.01 2.55 2.8 1.8 4.42 4.53 5.68 6.47 7.06 8.39 8.49 10.17 9.97 11.8 11.51 13.28 13.09 14.61 14.83 15.87Z" fill="currentColor" stroke="none"/><path d="M14.3 14.1 13.7 16 11.8 16.6 13.7 17.2 14.3 19.1 14.9 17.2 16.8 16.6 14.9 16Z" fill="currentColor" stroke="none"/><path d="M15.76 16.48 14.06 18.04 19.15 23.58 20.85 22.02Z" fill="currentColor" stroke="none"/>
+          </svg>
+          <span class="nm" id="modelName">AY-3.0</span>
+          <svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </button>
+
+        <button type="button" class="tool" id="btnAttach" aria-label="إرفاق ملف">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5 12.5 20a5.5 5.5 0 0 1-7.8-7.8l8.5-8.5a3.7 3.7 0 0 1 5.2 5.2l-8.5 8.5a1.8 1.8 0 0 1-2.6-2.6l7.8-7.8"/>
+          </svg>
+        </button>
+        <input type="file" id="fileIn" accept=".txt,.md,.csv,.json,.log,.html,.js,.py" hidden>
+
+        <div class="spacer"></div>
+
+        <button type="button" class="tool" id="btnCopy" aria-label="نسخ">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="8.5" y="8.5" width="12" height="12" rx="2.5"/>
+            <path d="M15.5 5.5v-1a2 2 0 0 0-2-2h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h1"/>
+          </svg>
+        </button>
+
+        <button type="submit" class="send" id="send" aria-label="إرسال">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+
+    <div class="foot" id="foot">ayso.ai · AY-3.0 · B12.1-S</div>
+  </div>
+</div>
+
+<!-- ══ قائمة النماذج ══ -->
+<div class="ov" id="ov">
+  <div class="sheet">
+    <div class="grab"></div>
+    <h3>النماذج</h3>
+    <div id="mlist"></div>
+    <div class="note" id="mnote"></div>
+  </div>
+</div>
+
+<div id="apps" class="cvs" hidden>
+  <div class="cvs-panel">
+    <div class="cvs-head">
+      <span>الوضع</span>
+      <button id="appsClose" aria-label="إغلاق">×</button>
+    </div>
+    <div class="ap-row" id="deepRow">
+      <div class="ap-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4.6a2.7 2.7 0 0 0-5.1-1.2A2.6 2.6 0 0 0 3.9 7a2.6 2.6 0 0 0-.5 4.3A2.8 2.8 0 0 0 4.6 16a2.6 2.6 0 0 0 2.9 2.9A2.7 2.7 0 0 0 11 17.6"/>
+          <path d="M13 4.6a2.7 2.7 0 0 1 5.1-1.2A2.6 2.6 0 0 1 20.1 7a2.6 2.6 0 0 1 .5 4.3A2.8 2.8 0 0 1 19.4 16a2.6 2.6 0 0 1-2.9 2.9A2.7 2.7 0 0 1 13 17.6"/>
+          <path d="M11 4.6v13M11 8H8.6M13 8h2.4M11 13H8.8M13 13h2.2"/>
+        </svg></div>
+      <div class="ap-tx">
+        <div class="ap-tt">التفكير العميق</div>
+        <div class="ap-dd">النموذج يفكّر قبل ما يكتب. أبطأ لكن أدق في المسائل الصعبة. يعمل مع AY-3.1.</div>
+      </div>
+      <button class="ap-sw" id="deepBtn" role="switch" aria-checked="false"><i></i></button>
+    </div>
+    <div class="ap-note" id="deepNote"></div>
+  </div>
+</div>
+
+<div id="convs" class="cvs" hidden>
+  <div class="cvs-panel">
+    <div class="cvs-head">
+      <span>المحادثات</span>
+      <button id="cvsClose" aria-label="إغلاق">×</button>
+    </div>
+    <button class="cvs-new" id="cvsNew">＋ محادثة جديدة</button>
+    <div class="cvs-list" id="cvsList"></div>
+  </div>
+</div>
+
+<div id="errbar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:999;
+  background:#4a1d1d;color:#ffd7d7;font:12px/1.6 ui-monospace,monospace;direction:ltr;
+  padding:8px 12px;border-bottom:1px solid #7a2b2b;max-height:38vh;overflow:auto"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   ayso.ai — محرك متعدد النماذج
+   AY-3.0 ⚡  = مجموعة النماذج السريعة   → سباق متوازٍ
+   AY-3.1 🧠 = مجموعة النماذج القوية     → تعاون + تحسين
+   ══════════════════════════════════════════════════════════ */
+
+const BUILD    = "B12.1-S";
+
+/* هل نحن داخل معاينة محمية؟ (localStorage محجوب أو iframe sandbox) */
+const IS_PREVIEW = (()=>{
+  try{
+    localStorage.setItem("__t","1"); localStorage.removeItem("__t");
+    if(window.self !== window.top) return true;      /* داخل iframe */
+    return location.host.endsWith("arena.site") || location.host.endsWith("e2b.app");
+  }catch{ return true; }
+})();
+
+/* أي خطأ بالصفحة يظهر بشريط أحمر فوق — لا سكوت */
+window.onerror = function(msg, src, line, col){
+  const b = document.getElementById("errbar");
+  if(!b) return;
+  b.style.display = "block";
+  b.textContent = "ERROR: " + msg + "  @" + line + ":" + col;
+};
+window.addEventListener("unhandledrejection", e=>{
+  const b = document.getElementById("errbar");
+  if(!b) return;
+  b.style.display = "block";
+  b.textContent = "PROMISE: " + (e.reason && (e.reason.message || e.reason));
+});
+/* ══ نسخة السيرفر: المفتاح لا يوجد هنا — الوسيط يضيفه ══ */
+const ENDPOINT = "/api/chat";
+const API_KEY  = "proxy";                       /* مجرد علامة "جاهز" */
+const PASS     = "";                            /* لو فعّلت AYSO_PASS حطّها هنا */
+const HEADERS  = {
+  "content-type": "application/json",
+  ...(PASS ? { "x-ayso-pass": PASS } : {}),
+};
+
+/* احتياطي مضمون — يُستخدم فقط لو فشلت كل النماذج القوية */
+const BACKUP = "nvidia/nemotron-3.5-bolt-e4b";
+
+const MODELS = [
+  {
+    id: "AY-3.0",
+    desc: "سريع · ردود فورية",
+    mode: "race",                          /* الأسرع يفوز */
+    max: 1400,
+    pool: [
+      "nvidia/nemotron-3.5-bolt-e4b",       /* 1.9s */
+      "ornith/ornith-1.5-122b",             /* 3.1s */
+      "reflection/beam-1.0",                /* 6.0s */
+    ],
+  },
+  {
+    id: "AY-3.1",
+    desc: "تفكير عميق · مهام معقدة",
+    mode: "team",                          /* كاتب ← مراجع مستقل ← مصحِّح */
+    max: 1700,
+    pool: [
+      "nvidia/nemotron-3-ultra-550b-a55b",
+      "reflection/beam-1.0",
+      "ornith/ornith-1.5-122b",
+    ],
+  },
+];
+
+/* نماذج تقبل تشغيل التفكير صراحةً */
+const FORCE_REASONING = new Set([
+  "nvidia/nemotron-3-ultra-550b-a55b",
+  "reflection/beam-1.0",
+]);
+
+/* أدوار الفريق — كل دور يتسلم عمل اللي قبله */
+/* عقلان مستقلان حقيقيان:
+   write  = nemotron-3-ultra-550b  (NVIDIA — كاتب قوي)
+   review = laguna-s-2.1 → gemini-2.5-flash  (Google — عقل مختلف تماماً) */
+const TEAM = {
+  /* AY-3.1 = العقل الأقوى فقط. لا مراجع، لا تصحيح — التحقق آلي بعده. */
+  write:  ["nvidia/nemotron-3-ultra-550b-a55b", "reflection/beam-1.0"],
+};
+
+/* يجرّب نماذج الدور بالترتيب حتى ينجح واحد */
+async function callRole(role, messages, maxTokens, signal, onDelta, timeoutMs, tries){
+  let last;
+  for(const mid of TEAM[role]){
+    try{ return await callRetry(mid, messages, maxTokens, signal, onDelta, timeoutMs, tries); }
+    catch(e){
+      last = e;
+      if(e.name === "AbortError" || S.stopped || (signal && signal.aborted)) throw e;
+    }
+  }
+  throw last;
+}
+
+/* نماذج تدعم إسكات التفكير — تُجاب مباشرة */
+const NO_THINK = new Set([
+  "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "nvidia/nemotron-3.5-bolt-e4b",
+  "cohere/north-mini-code",
+  "nvidia/nemotron-3-ultra-550b-a55b",
+  "poolside/laguna-s-2.1",
+  "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "reflection/beam-1.0",
+  "ornith/ornith-1.5-122b",
+  "minimax/minimax-m3.1-flash",
+]);
+
+const $  = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+function readHist(){
+  try{
+    const raw = localStorage.getItem("ayso.hist");
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr.filter(m => m && typeof m.content === "string") : [];
+  }catch{ return []; }
+}
+
+const S = {
+  history: readHist(),
+  busy: false,
+  active: (()=>{
+    const saved = localStorage.getItem("ayso.model");
+    return MODELS.some(m => m.id === saved) ? saved : MODELS[0].id;
+  })(),
+  aborter: null,
+  cid: "c" + Date.now() + Math.random().toString(36).slice(2, 6),
+};
+
+const ICON = {
+  sword: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M13.33 17.93 11.6 16.37 9.98 14.65 8.46 12.78 7.05 10.77 5.68 8.49 4.49 6.17 3.43 3.71 3.01 2.55 2.8 1.8 4.42 4.53 5.68 6.47 7.06 8.39 8.49 10.17 9.97 11.8 11.51 13.28 13.09 14.61 14.83 15.87Z" fill="currentColor" stroke="none"/><path d="M14.3 14.1 13.7 16 11.8 16.6 13.7 17.2 14.3 19.1 14.9 17.2 16.8 16.6 14.9 16Z" fill="currentColor" stroke="none"/><path d="M15.76 16.48 14.06 18.04 19.15 23.58 20.85 22.02Z" fill="currentColor" stroke="none"/></svg>`,
+  bolt: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>`,
+};
+const CHK = `<svg class="chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></svg>`;
+
+function toast(t){
+  const el = $("#toast");
+  el.textContent = t; el.classList.add("on");
+  clearTimeout(el._t); el._t = setTimeout(()=> el.classList.remove("on"), 2000);
+}
+
+/* بعض النماذج تُخرج جدول HTML — نحوّله لجدولنا */
+function htmlTableToTw(raw){
+  const un = raw.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"');
+  const rows = [...un.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)];
+  if(!rows.length) return raw;
+  const clean = t => t.replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+  let head = null; const body = [];
+  rows.forEach((r, i)=>{
+    const cells = [...r[1].matchAll(/<t([hd])[^>]*>([\s\S]*?)<\/t\1>/gi)]
+      .map(c => ({ h: c[1].toLowerCase() === "h", t: clean(c[2]) }));
+    if(!cells.length) return;
+    if(i === 0 && cells.some(c => c.h)) head = cells.map(c => c.t);
+    else body.push(cells.map(c => c.t));
+  });
+  if(!head) head = body.shift() || [];
+  if(!head.length) return raw;
+  const th = head.map(h => `<th>${h}</th>`).join("");
+  const tb = body.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("");
+  return `<div class="tw"><table><thead><tr>${th}</tr></thead><tbody>${tb}</tbody></table></div>`;
+}
+
+function md(src){
+  if(!src) return "";
+  /* أثناء البث قد يكون السياج غير مغلق — نغلقه مؤقتاً حتى لا يظهر خربطة */
+  const fences = (String(src).match(/```/g) || []).length;
+  let s = esc(fences % 2 ? src + "\n```" : src), blk = [];
+  s = s.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,lang,c)=>{
+    const code = c.replace(/\n$/,"");
+    const lg = (lang || "").trim() || "code";
+    blk.push(
+      `<div class="cbx" dir="ltr"><div class="hd"><span class="lang">${esc(lg)}</span>` +
+      `<button class="cbtn" data-copy="1">` +
+      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">` +
+      `<rect x="8.5" y="8.5" width="12" height="12" rx="2.5"/><path d="M15.5 5.5v-1a2 2 0 0 0-2-2h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h1"/>` +
+      `</svg><span>نسخ</span></button></div>` +
+      `<pre style="margin:0;padding:0;border:0;border-radius:0;background:transparent;` +
+      `overflow-x:auto;direction:ltr;text-align:left;font-size:0;line-height:0;white-space:normal">` +
+      `<code style="display:block;margin:0;padding:12px 14px;border:0;border-radius:0;` +
+      `background:transparent;color:#d7dbe4;font-size:12.8px;line-height:1.7;` +
+      `font-family:ui-monospace,Menlo,Consolas,'Courier New',monospace;` +
+      `white-space:pre;tab-size:4;direction:ltr;text-align:left;` +
+      `unicode-bidi:isolate;min-width:100%;width:max-content">${code}</code></pre></div>`
+    );
+    return `\u0000${blk.length-1}\u0000`;
+  });
+  /* جداول HTML → جدولنا */
+  s = s.replace(/&lt;table[\s\S]*?&lt;\/table&gt;/gi, m => htmlTableToTw(m));
+  s = s.replace(/&lt;br\s*\/?&gt;/gi, "<br>");
+  s = s.replace(/`([^`\n]+)`/g,"<code>$1</code>");
+  s = s.replace(/^#{5,6}\s*(.*)$/gm,"<h4>$1</h4>")
+       .replace(/^####\s*(.*)$/gm,"<h4>$1</h4>")
+       .replace(/^###\s*(.*)$/gm,"<h3>$1</h3>")
+       .replace(/^##\s*(.*)$/gm,"<h2>$1</h2>")
+       .replace(/^#\s*(.*)$/gm,"<h1>$1</h1>");
+  s = s.replace(/^\s*&gt;\s?(.*)$/gm,"<blockquote>$1</blockquote>");
+  s = s.replace(/^\s*[-*•]\s+(.*)$/gm,"<li>$1</li>");
+  s = s.replace(/(?:<li>[\s\S]*?<\/li>\s*)+/g,m=>`<ul>${m}</ul>`);
+  s = s.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
+  /* جداول markdown */
+  s = s.replace(/^\|(.+)\|\s*\n\|\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|\s*$/gm, (m)=> "\u0001TBL\u0001" + m);
+  s = s.replace(/\u0001TBL\u0001([\s\S]*?)(?=\n\s*\n|$)/g, (m, block)=>{
+    const rows = block.trim().split("\n").filter(r=> r.trim().startsWith("|"));
+    if(rows.length < 2) return block;
+    const cells = r => r.trim().replace(/^\|/,"").replace(/\|$/,"").split("|").map(c=> c.trim());
+    const head = cells(rows[0]);
+    const body = rows.slice(2).map(cells);
+    const th = head.map(h=> `<th>${h}</th>`).join("");
+    const tb = body.map(r=> `<tr>${r.map(c=> `<td>${c}</td>`).join("")}</tr>`).join("");
+    return `<div class="tw"><table><thead><tr>${th}</tr></thead><tbody>${tb}</tbody></table></div>`;
+  });
+
+  s = s.replace(/^\s*(?:---|\*\*\*)\s*$/gm,"<hr>");
+  s = s.split(/\n{2,}/).map(p => {
+    if(p.indexOf("\u0000") !== -1) return p;          /* كتلة كود */
+    const t = p.trim();
+    const inline = /<p|<li|<ul|<ol|<h\d|<div|<pre|<blockquote|<table|<tr|<thead/.test(p);
+    return inline ? p : `<p>${p.replace(/\n/g,"<br>")}</p>`;
+  }).join("\n");
+  return s.replace(/\u0000(\d+)\u0000/g,(_,i)=>blk[i]);
+}
+
+/* ══════════ المحادثات المحفوظة ══════════ */
+const CONV_KEY = "ayso.convs";
+
+function readConvs(){
+  try{
+    const a = JSON.parse(localStorage.getItem(CONV_KEY) || "[]");
+    return Array.isArray(a) ? a.filter(c => c && c.id && Array.isArray(c.msgs)) : [];
+  }catch{ return []; }
+}
+function writeConvs(a){
+  try{ localStorage.setItem(CONV_KEY, JSON.stringify(a.slice(0, 60))); }catch{}
+}
+
+/* يحفظ المحادثة الحالية داخل القائمة */
+function upsertConv(){
+  if(!S.history.length) return;
+  const all = readConvs();
+  const firstUser = S.history.find(m => m.role === "user");
+  const title = (firstUser ? firstUser.content : "محادثة").replace(/\s+/g, " ").slice(0, 46);
+  const rec = { id: S.cid, title, ts: Date.now(), msgs: S.history.slice(-80) };
+  const i = all.findIndex(c => c.id === S.cid);
+  if(i >= 0) all[i] = rec; else all.unshift(rec);
+  writeConvs(all);
+}
+
+function saveHist(){
+  try{ localStorage.setItem("ayso.hist", JSON.stringify(S.history.slice(-40))); }catch{}
+  upsertConv();
+}
+/* الترحيب: بالنص أولاً ثم يثبت صغيراً فوق */
+let heroTimer = null;
+function showHero(v){
+  const app  = document.querySelector(".app");
+  const hero = document.getElementById("hero");
+  if(!app) return;
+
+  if(v){
+    clearTimeout(heroTimer);
+    if(hero){ hero.style.visibility = ""; hero.style.opacity = ""; }
+    app.classList.remove("chat");
+    return;
+  }
+
+  app.classList.add("chat");
+  /* ضمان الإخفاء لو الأنميشن ما اشتغل */
+  clearTimeout(heroTimer);
+  heroTimer = setTimeout(()=>{
+    if(app.classList.contains("chat") && hero){
+      hero.style.visibility = "hidden";
+      hero.style.opacity = "0";
+    }
+  }, 600);
+}
+
+function scrollDown(){
+  const m = $("#main");
+  requestAnimationFrame(()=>{ m.scrollTop = m.scrollHeight; });
+}
+
+const waveHTML = () => '<div class="wave"><div class="blob"></div></div>';
+
+const BRAIN_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M11 4.6a2.7 2.7 0 0 0-5.1-1.2A2.6 2.6 0 0 0 3.9 7a2.6 2.6 0 0 0-.5 4.3A2.8 2.8 0 0 0 4.6 16a2.6 2.6 0 0 0 2.9 2.9A2.7 2.7 0 0 0 11 17.6"/>
+  <path d="M13 4.6a2.7 2.7 0 0 1 5.1-1.2A2.6 2.6 0 0 1 20.1 7a2.6 2.6 0 0 1 .5 4.3A2.8 2.8 0 0 1 19.4 16a2.6 2.6 0 0 1-2.9 2.9A2.7 2.7 0 0 1 13 17.6"/>
+  <path d="M11 4.6v13M11 8H8.6M13 8h2.4M11 13H8.8M13 13h2.2"/>
+</svg>`;
+
+/* مؤشر «التفكير» — يظهر فقط لما وضع التفكير العميق مشغّل */
+const thinkHTML = () =>
+  `<div class="thk">${BRAIN_SVG}<span>Thinking...</span>` +
+  `<svg class="ch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></div>`;
+
+/* يكتب النص النهائي بأنميشن بدل ما يظهر فجأة */
+function revealFinal(el, text){
+  el.classList.remove("reveal");
+  el.innerHTML = md(text);
+  void el.offsetWidth;          /* إعادة تشغيل الأنميشن */
+  el.classList.add("reveal");
+}
+
+/* ══ المجموعة النشطة ══ */
+const activeGroup = ()=> MODELS.find(m => m.id === S.active) || MODELS[0];
+
+function renderModel(){
+  const g = activeGroup();
+  $("#modelName").textContent = g.id;
+  const f = $("#foot"); if(f) f.textContent = "ayso.ai · " + g.id + " · " + BUILD;
+  document.querySelectorAll(".msg.a .who").forEach(el => el.textContent = g.id);
+}
+
+function renderModelList(){
+  $("#mlist").innerHTML = MODELS.map(g => `
+    <button class="mrow ${g.id===S.active?'sel':''}" data-id="${esc(g.id)}">
+      <span class="sico">${ICON.sword}</span>
+      <span class="mtxt">
+        <span class="mttl">${esc(g.id)}</span>
+        <span class="msub">${esc(g.desc)}</span>
+      </span>
+      ${CHK}
+    </button>`).join("");
+
+  $("#mlist").querySelectorAll(".mrow").forEach(b=>{
+    b.onclick = ()=>{
+      S.active = b.dataset.id;
+      localStorage.setItem("ayso.model", S.active);
+      renderModel();
+renderDeep(); renderModelList(); closeSheet();
+    };
+  });
+
+  $("#mnote").textContent = "";
+}
+
+function openSheet(){ renderModelList(); $("#ov").classList.add("on"); $("#modelBtn").classList.add("open"); }
+function closeSheet(){ $("#ov").classList.remove("on"); $("#modelBtn").classList.remove("open"); }
+$("#modelBtn").onclick = e => { e.stopPropagation(); $("#ov").classList.contains("on") ? closeSheet() : openSheet(); };
+$("#ov").onclick = e => { if(e.target.id === "ov") closeSheet(); };
+
+/* ══ الإدخال ══ */
+const ta = $("#input");
+ta.addEventListener("input", ()=>{
+  ta.style.height = "auto";
+  ta.style.height = Math.min(ta.scrollHeight, 160) + "px";
+});
+/* لوحة مفاتيح الجوال (عربي) تُرسل Enter أثناء التركيب — ننتظر حتى يكتمل النص */
+let composing = false;
+ta.addEventListener("compositionstart", ()=>{ composing = true; });
+ta.addEventListener("compositionend", ()=>{ setTimeout(()=>{ composing = false; }, 30); });
+
+ta.addEventListener("keydown", e=>{
+  if(e.isComposing || composing || e.keyCode === 229) return;   /* لا ترسل وسط التركيب */
+  if(e.key === "Enter" && !e.shiftKey && window.innerWidth > 720){
+    e.preventDefault(); $("#form").requestSubmit();
+  }
+});
+
+/* الشات ينفتح أول ما يبدأ المستخدم يكتب — مو بس بعد الإرسال */
+const openChatOnType = ()=>{ if(ta.value.trim()) showHero(false); };
+ta.addEventListener("input", openChatOnType);
+ta.addEventListener("focus", openChatOnType);
+ta.addEventListener("click", openChatOnType);
+ta.addEventListener("paste", ()=> setTimeout(openChatOnType, 0));
+
+function addUser(txt){
+  showHero(false);
+  const d = document.createElement("div");
+  d.className = "msg u";
+  d.innerHTML = `<div class="b">${esc(txt)}</div>`;
+  $("#msgs").appendChild(d); scrollDown();
+}
+function addAI(){
+  showHero(false);
+  const d = document.createElement("div");
+  d.className = "msg a";
+  d.innerHTML = `<div class="who">${esc(activeGroup().id)}</div><div class="bd"><span class="cursor"></span></div>`;
+  $("#msgs").appendChild(d); scrollDown();
+  return d;
+}
+
+/* ══════════════ المحرك ══════════════ */
+
+const NOW = new Date();
+const TODAY = NOW.toLocaleDateString("ar-EG", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
+const CLOCK = NOW.toLocaleTimeString("ar-EG", { hour:"2-digit", minute:"2-digit" });
+
+const SYS = `أنت Ayso — مساعد ذكي. أجب بنفس لغة المستخدم، بدقة وبلا حشو.
+التاريخ اليوم: ${TODAY} — الوقت: ${CLOCK}. اعتمد هذا في أي سؤال عن التاريخ أو المدة.
+
+أدوات متاحة لك:
+- للحساب الرقمي الدقيق اكتب التعبير داخل <<calc: 12*45 >> وسيُستبدل بالناتج الصحيح. لا تحسب ذهنياً في المسائل المهمة.`;
+
+/* تعليمات صارمة — تُستخدم مع المجموعة السريعة AY-3.0 فقط */
+const SYS_STRICT = [
+  "أنت Ayso — مساعد ذكي. أجب بنفس لغة المستخدم، بدقة وبلا حشو.",
+  "",
+  "قواعد الالتزام بوصف المستخدم (مهمة جداً):",
+  "1) نفّذ ما وصفه المستخدم حرفياً: نفس عدد الأعمدة والصفوف، نفس ترتيبها، نفس عناوينها،",
+  "   ونفس اللغة التي طلبها. لا تضف أعمدة أو حقولاً أو أقساماً لم يطلبها.",
+  "2) إذا حدّد المستخدم عدد الصفوف أو الأعمدة، التزم بالعدد بالضبط.",
+  "3) إذا طلب جدولاً، أخرجه جدول Markdown فقط بلا مقدمات ولا خاتمة ولا شرح بعد الجدول.",
+  "4) إذا طلب ملفاً (تقرير، مذكرة، ورقة عمل)، اكتب محتواه جاهزاً للتصدير مباشرة:",
+  "   عناوين واضحة، وتنظيم مناسب للطباعة، بلا عبارات حوارية مثل «إليك» أو «أتمنى أن يساعدك».",
+  "5) إذا كان الوصف ناقصاً، اسأل سؤالاً واحداً قصيراً فقط قبل التنفيذ.",
+].join("\n");
+
+/* تعليمات المهام المعقدة — تُطبَّق على AY-3.1 فقط */
+const SYS_DEEP = [
+  SYS,
+  "1) ابدأ بالجواب مباشرة، بلا مقدمات ولا إعادة صياغة للسؤال.",
+  "2) كل ادعاء مهم يجب أن يقابله سبب أو دليل أو مثال. لا عبارات عامة بلا سند.",
+  "3) إذا كان السؤال تقنياً: اذكر الخطوات بالترتيب، والأرقام الحقيقية، وأين يخطئ الناس.",
+  "4) إذا كان فيه مقارنة: قدّم جدولاً ثم توصية واحدة صريحة مع سبب.",
+  "5) اذكر المخاطر أو الحالات التي لا يعمل فيها حلّك.",
+  "6) لا تختم بعبارات مجاملة. الخاتمة تكون نتيجة أو خطوة تالية.",
+  "7) كن مكثّفاً: لا تتجاوز ٤٥٠ كلمة إلا إذا طلب المستخدم تفصيلاً صريحاً. الكثافة أفضل من الطول.",
+].join("\n");
+
+/* ══════════ أداة الحاسبة — تنفيذ حقيقي لا تخمين ══════════ */
+function safeCalc(expr){
+  const clean = String(expr).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+                            .replace(/[×xX]/g, "*").replace(/÷/g, "/").replace(/[,\s_]/g, "");
+  if(!/^[0-9+\-*/%().]+$/.test(clean) || clean.length > 200) return null;
+  try{
+    const v = Function("'use strict';return (" + clean + ")")();
+    if(typeof v !== "number" || !isFinite(v)) return null;
+    return Math.round(v * 1e10) / 1e10;
+  }catch{ return null; }
+}
+
+/* يستخرج كل <<calc:...>> ويحسبها */
+function runCalcs(text){
+  const out = [];
+  text.replace(/<<\s*calc\s*:\s*([^>]{1,200})>>/gi, (m, expr) => {
+    const v = safeCalc(expr);
+    out.push({ expr: expr.trim(), value: v });
+    return m;
+  });
+  return out;
+}
+
+/* يستبدل العلامات بالناتج داخل النص */
+function fillCalcs(text, results){
+  let i = 0;
+  return text.replace(/<<\s*calc\s*:\s*([^>]{1,200})>>/gi, () => {
+    const r = results[i++];
+    return r && r.value !== null ? String(r.value) : "؟";
+  });
+}
+
+function calcBadge(results){
+  const ok = results.filter(r => r.value !== null);
+  if(!ok.length) return null;
+  const d = document.createElement("div");
+  d.className = "vfy";
+  d.innerHTML = `<span class="vok">🧮 حُسب فعلياً: ` +
+    ok.slice(0,3).map(r => `<em>${esc(r.expr)} = ${r.value}</em>`).join(" · ") + `</span>`;
+  return d;
+}
+
+/* ══════════ تحقق حقيقي: تنفيذ/فحص الكود فعلياً، لا رأي نموذج ══════════ */
+function verifyBlocks(text){
+  const out = [];
+  const re = /```(js|javascript|ts|typescript)\s*\n([\s\S]*?)```/gi;
+  let m;
+  while((m = re.exec(text))){
+    const code = m[2];
+    try{
+      new Function(code);
+      out.push({ ok:true, code, lines: code.split("\n").length });
+    }catch(e){
+      out.push({ ok:false, code, err: e.message, lines: code.split("\n").length });
+    }
+  }
+  return out;
+}
+
+/* تنفيذ حقيقي: يشغّل الكود ويلتقط console */
+function execJS(code){
+  const logs = [];
+  const line = a => a.map(x=>{
+    try{ return (x !== null && typeof x === "object") ? JSON.stringify(x) : String(x); }
+    catch{ return String(x); }
+  }).join(" ");
+  const put = (pre, a) => { logs.push(pre + line(a)); };
+  const fake = { log:(...a)=>{ put("", a); }, error:(...a)=>{ put("⚠ ", a); },
+                 warn:(...a)=>{ put("⚠ ", a); }, info:(...a)=>{ put("", a); } };
+  try{
+    /* تعبير من سطر واحد يُرجَع كقيمة؛ كتلة كود تُنفَّذ كبيان */
+    const isExpr = !/[;\n]/.test(code.trim()) &&
+                   !/^(function|const|let|var|for|while|if|class|return|do|switch)\b/.test(code.trim());
+    const fn = new Function("console", isExpr ? "return (" + code + ")" : code);
+    const ret = fn(fake);
+    if(ret !== undefined) logs.push("→ " + (typeof ret === "object" ? JSON.stringify(ret) : String(ret)));
+    return { ok:true, out: logs.join("\n") };
+  }catch(e){
+    return { ok:false, err: e.message, out: logs.join("\n") };
+  }
+}
+
+function verifyBadge(results, q){
+  if(!results.length) return null;
+  const wrap = document.createElement("div");
+  wrap.className = "vfy";
+  const good = results.filter(r => r.ok).length;
+  const bad  = results.length - good;
+
+  if(bad === 0){
+    wrap.innerHTML = `<span class="vok">✅ تحقّق: ${good} كود سليم الصياغة</span>`;
+    const run = document.createElement("button");
+    run.className = "vfix";
+    run.textContent = "▶ تشغيل";
+    run.onclick = ()=>{
+      const src = results.filter(r => r.ok).map(r => r.code).join("\n");
+      const r = execJS(src);
+      run.remove();
+      const box = document.createElement("pre");
+      box.className = "vout";
+      box.textContent = r.ok ? (r.out || "(بلا مخرجات)") : ("خطأ: " + r.err + (r.out ? "\n" + r.out : ""));
+      if(!r.ok) box.classList.add("bad");
+      wrap.appendChild(box);
+    };
+    wrap.appendChild(run);
+  }else{
+    wrap.innerHTML = `<span class="vbad">❌ ${bad} كود فيه خطأ صياغة</span>` +
+      results.filter(r=>!r.ok).slice(0,2)
+        .map(r => `<code class="verr">${esc(String(r.err).slice(0,120))}</code>`).join("");
+    const b = document.createElement("button");
+    b.className = "vfix";
+    b.textContent = "أرسل الخطأ للنموذج ليصلحه";
+    b.onclick = ()=>{
+      if(S.busy) return;
+      ta.value = `الكود اللي كتبته فيه خطأ صياغة:\n${results.filter(r=>!r.ok).map(r=>"- "+r.err).join("\n")}\n\nصحّحه وأعد كتابته كاملاً.`;
+      ta.dispatchEvent(new Event("input"));
+      $("#form").requestSubmit();
+    };
+    wrap.appendChild(b);
+  }
+  return wrap;
+}
+
+/* ══════════ بطاقة المهمة — تُحدَّد من نص السؤال، بلا نداء إضافي ══════════ */
+const CARDS = [
+  { k:"code", re:/(كود|برمج|دالة|خوارزمي|بايثون|جافا|سكربت|خطأ برمجي|تصحيح الكود)|\b(bug|debug|function|script|python|javascript|api|sql|regex|class|code)\b|```/i,
+    t:0.2, max:2600,
+    hint:"اكتب الكود كاملاً جاهزاً للتشغيل داخل \u0060\u0060\u0060 بعلامة اللغة. بعده: التعقيد الزمني/المكاني، ثم حالات اختبار تغطي الحدود والحالات الشاذة. لا شرح قبل الكود." },
+  { k:"math", re:/(احسب|احسبلي|معادل|رياضي|احتمال|مشتق|تكامل|حل المعادلة|كم يساوي)|[0-9٠-٩]\s*[+\-*/×÷]\s*[0-9٠-٩]|[0-9٠-٩][0-9٠-٩.,]*\s*(٪|%)|(كم|خصم|نسبة|سعر|تكلفة|ربح|فائدة|قسط|راتب|ميزانية)[^.\n]{0,30}[0-9٠-٩]|[0-9٠-٩][^.\n]{0,30}(دينار|دولار|يورو|٪)/i,
+    t:0.1, max:2000,
+    hint:"اكتب الحل خطوة بخطوة. القاعدة الملزمة: كل عملية حسابية اكتبها بصيغة <<calc: التعبير >> ولا تحسبها ذهنياً — سيُستبدل الناتج تلقائياً. بعد النتيجة، تحقق منها بطريقة معاكسة واذكر إن تطابقت. إن كان في أكثر من تفسير، اذكر التفسير المعتمد." },
+  { k:"analysis", re:/(حلل|تحليل|قارن|مقارنة|أفضل|افضل|توصي|توصية|اختيار|أيهما|ايهما|مزايا|عيوب|قرار)/i,
+    t:0.4, max:2400,
+    hint:"ابدأ بجدول مقارنة (Markdown) بالأعمدة المناسبة. ثم توصية واحدة صريحة مع سببها. ثم المخاطر أو الحالات التي تنقلب فيها التوصية." },
+  { k:"writing", re:/(اكتب|صياغة|مقال|تقرير|رسالة|خطاب|مقدمة|خاتمة|محتوى|وصف|إعلان|ايميل|بريد)/i,
+    t:0.8, max:2400,
+    hint:"اكتب النص جاهزاً للاستخدام مباشرة، بلا مقدمات ولا تعليق على الكتابة. هيكل واضح بعناوين. لا تختم بسؤال أو عرض مساعدة." },
+  { k:"translate", re:/(ترجم|ترجمة|بالعربي|بالعربية|بالإنجليزي|بالانكليزي|بالإنجليزية|translate)/i,
+    t:0.2, max:2000,
+    hint:"أعطِ الترجمة فقط. حافظ على المصطلحات التقنية كما هي إن كانت أدق. لا شرح ولا تعليق إلا إذا طُلب." },
+  { k:"general", re:/.^/, t:0.6, max:2000,
+    hint:"أجب مباشرة بلا إعادة صياغة للسؤال. كل ادعاء مهم يقابله سبب. اذكر المخاطر أو الحدود عند وجودها. لا خاتمة مجاملة." },
+];
+
+function cardFor(q){
+  for(const c of CARDS) if(c.re.test(q)) return c;
+  return CARDS[CARDS.length - 1];
+}
+
+/* الاختيار حسب المجموعة النشطة */
+function sysFor(group, q){
+  const base = !group ? SYS : group.mode === "race" ? SYS_STRICT : SYS_DEEP;
+  const card = q ? cardFor(q) : null;
+  return card ? base + "\n\nنوع المهمة: " + card.k + "\n" + card.hint : base;
+}
+
+/* حرارة النداء الحالي — تضبطها بطاقة المهمة */
+let TEMP = 0.7;
+
+/* وضع التفكير العميق — للنموذج القوي فقط */
+let DEEP = false;
+try{ DEEP = localStorage.getItem("ayso.deep") === "1"; }catch{}
+
+/* نداء نموذج واحد، يعيد النص الكامل. onDelta(نص) أثناء البث. */
+async function callModel(modelId, messages, maxTokens, signal, onDelta, timeoutMs = 90000){
+  /* مهلة داخلية حتى لا يتعلّق الطلب للأبد */
+  const local = new AbortController();
+  const tmr = setTimeout(()=> local.abort(new Error("timeout")), timeoutMs);
+  const onAbort = ()=> local.abort();
+  if(signal) signal.addEventListener("abort", onAbort, { once:true });
+
+  try{
+  const r = await fetch(ENDPOINT, {
+    method: "POST",
+    signal: local.signal,
+    headers: HEADERS,
+    body: JSON.stringify({
+      model: modelId,
+      messages,
+      temperature: TEMP,
+      max_tokens: maxTokens,
+      stream: true,
+      ...(DEEP && FORCE_REASONING.has(modelId) ? { reasoning: { enabled: true, budget: 2000 } }
+        : NO_THINK.has(modelId) ? { reasoning: { enabled: false } } : {}),
+    }),
+  });
+
+  if(!r.ok){
+    let msg = "HTTP " + r.status;
+    try{ const t = await r.text(); const j = JSON.parse(t); msg = j?.error?.message || msg; }catch{}
+    throw new Error(msg);
+  }
+
+  let acc = "", served = modelId;
+  const rd = r.body.getReader(), dec = new TextDecoder();
+  let buf = "";
+  while(true){
+    const { done, value } = await rd.read();
+    if(done) break;
+    buf += dec.decode(value, { stream:true });
+    const lines = buf.split("\n"); buf = lines.pop() || "";
+    for(const ln of lines){
+      const t = ln.trim();
+      if(!t.startsWith("data:")) continue;
+      const p = t.slice(5).trim();
+      if(p === "[DONE]") continue;
+      try{
+        const j = JSON.parse(p);
+        if(j.error) throw new Error(j.error.message || "خطأ من الوسيط");
+        if(j.model) served = j.model;
+        const dl = j.choices?.[0]?.delta || {};
+        /* تجاهل نص التفكير الداخلي بالكامل */
+        const d = dl.content;
+        if(d){ acc += d; onDelta && onDelta(acc); }
+      }catch{}
+    }
+  }
+  if(!acc.trim()) throw new Error("ردٌ فارغ");
+  return { text: acc, served };
+  } catch(e){
+    /* أي إلغاء (من الزر أو المهلة) = توقّف مقصود، مو خطأ */
+    const timeoutHit = local.signal.aborted && !(signal && signal.aborted);
+    if(timeoutHit){
+      throw new Error("تجاوز الوقت — جرّب مرة ثانية");
+    }
+    if(local.signal.aborted || (signal && signal.aborted) || String(e?.name) === "AbortError"){
+      throw Object.assign(new Error("stopped"), { name:"AbortError" });
+    }
+    throw e;
+  } finally {
+    clearTimeout(tmr);
+    if(signal) signal.removeEventListener("abort", onAbort);
+  }
+}
+
+/* AY-3.0 — سباق: كل النماذج السريعة تُسأل بالتوازي، أول رد كامل يفوز */
+/* نداء مع إعادة محاولة — تباعد متزايد (المزوّد يفشل ~١٠٪ تحت الضغط) */
+async function callRetry(mid, messages, maxTokens, signal, onDelta, timeoutMs = 90000, tries = 5){
+  const WAIT = [600, 1400, 3000, 6000];
+  let last;
+  for(let k = 0; k < tries; k++){
+    try{ return await callModel(mid, messages, maxTokens, signal, onDelta, timeoutMs); }
+    catch(e){
+      last = e;
+      const aborted = e.name === "AbortError" || S.stopped || (signal && signal.aborted)
+                      || /abort/i.test(e.message || "");
+      if(aborted) throw e;
+      const perm = /\b4\d\d\b/.test(e.message || "") && !/429/.test(e.message || "");
+      if(perm || k === tries - 1) throw e;
+      await new Promise(r => setTimeout(r, WAIT[k] + Math.random() * 400));
+    }
+  }
+  throw last;
+}
+
+async function runRace(pool, messages, maxTokens, node, bd, who){
+  const ctrls = pool.slice(0,3).map(()=> new AbortController());
+  const links = [];
+  S.aborter = { abort: ()=> ctrls.forEach(c=>c.abort()) };
+
+  who.innerHTML = `<span class="nm">${esc(activeGroup().id)}</span>`;
+  bd.innerHTML = waveHTML();
+
+  return new Promise((resolve, reject)=>{
+    let done = false, alive = 0;
+    let leader = -1;
+    pool.slice(0,3).forEach((mid, i)=>{
+      alive++;
+      callModel(mid, messages, maxTokens, ctrls[i].signal, txt=>{
+        if(done) return;
+        if(leader === -1) leader = i;
+        if(leader !== i) return;          /* نموذج واحد فقط يرسم */
+        bd.innerHTML = md(txt) + '<span class="cursor"></span>';
+        scrollDown();
+      })
+      .then(res=>{
+        if(done) return;
+        done = true;
+        ctrls.forEach((c, k)=>{ if(k!==i) c.abort(); });
+        resolve({ ...res, winner: mid, racers: pool.length });
+      })
+      .catch(err=>{
+        links.push(err.message);
+        if(--alive === 0 && !done){
+          done = true;
+          const stopped = S.stopped || links.every(l => /abort|stopped/i.test(l));
+          if(stopped){ reject(Object.assign(new Error("stopped"),{name:"AbortError"})); return; }
+          /* احتياطي: جرّب نموذجاً واحداً أخيراً بدل الفشل */
+          (async ()=>{
+            try{
+              const r = await callModel(BACKUP, messages, maxTokens, ctrls[0]?.signal, txt=>{
+                bd.innerHTML = md(txt) + '<span class="cursor"></span>';
+                scrollDown();
+              }, 60000);
+              resolve({ ...r, winner: BACKUP, racers: pool.length });
+            }catch(e2){ reject(new Error(links[0] || e2.message || "فشل الكل")); }
+          })();
+        }
+      });
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   AY-3.1 — تعاون حقيقي
+   المرحلة ١: كل النماذج تحل نفس المهمة بالتوازي (بلا بث)
+   المرحلة ٢: نموذج يدمج الحلول في جواب واحد (بث مرة واحدة)
+   ══════════════════════════════════════════════════════════ */
+async function runTeam(messages, maxTokens, bd, who){
+  const ctrl = new AbortController();
+  S.aborter = ctrl;
+  const sig = ctrl.signal;
+  const gid = activeGroup().id;
+  const q   = messages[messages.length - 1].content;
+  const sys = sysFor(activeGroup(), q);
+  const past = messages.filter(m => m.role !== "system").slice(0, -1).slice(-8);
+  const fail = ()=> { throw Object.assign(new Error("stopped"), { name:"AbortError" }); };
+
+  who.innerHTML = `<span class="nm">${esc(gid)}</span>`;
+
+  /* ══ كتابة مباشرة بأقوى نموذج — بث حي، بلا مراحل وسيطة ══ */
+  bd.innerHTML = DEEP ? thinkHTML() : waveHTML();
+  let draft = null;
+  try{
+    draft = await callRole("write", [{ role:"system", content: sys }, ...past, { role:"user", content: q }],
+      maxTokens, sig, txt => { bd.innerHTML = md(txt) + '<span class="cursor"></span>'; scrollDown(); }, 120000);
+  }catch(e){ if(e.name === "AbortError" || S.stopped) fail(); }
+
+  if(!draft || !draft.text.trim()) throw new Error("تعذّر إنشاء الجواب");
+  if(S.stopped) fail();
+
+  return { text: draft.text, served:"deep", enhanced:false };
+}
+
+/* ══ الإرسال ══ */
+$("#form").onsubmit = async e => {
+  e.preventDefault();
+  let txt = ta.value.trim();
+  if(!txt){
+    if(!composing) toast("اكتب رسالتك أولاً");
+    return;
+  }
+  if(S.busy) return;
+
+  const g = activeGroup();
+
+  /* إرفاق ملف؟ يُضمّن داخل الرسالة ويُرسل مرة واحدة */
+  let attachBanner = null;
+  if(ATTACH){
+    const head = `\n\n— محتوى الملف «${ATTACH.name}» —\n`;
+    const body = ATTACH.text.slice(0, 14000);
+    txt = txt + head + body + "\n— نهاية الملف —";
+    attachBanner = ATTACH.name;
+    ATTACH = null;
+    renderAttach();
+  }
+
+  showHero(false);                 /* افتح الشات فوراً وقبل أي شي */
+  ta.value = ""; ta.style.height = "auto";
+  addUser(attachBanner ? txt.split("\n\n— محتوى الملف")[0] + `\n\n📎 ${attachBanner}` : txt);
+  S.history.push({ role:"user", content: txt });
+  saveHist();                       /* احفظ فوراً — لا تنتظر الرد */
+
+  const node = addAI();
+  const bd = node.querySelector(".bd");
+  const who = node.querySelector(".who");
+
+  S.busy = true; setSendMode(true);
+
+  if(!API_KEY){
+    bd.innerHTML = "<p>الواجهة جاهزة ✓ — بانتظار المفتاح.</p>";
+    S.busy = false; setSendMode(false);
+    return;
+  }
+
+  /* قصّ السياق: آخر ١٢ رسالة وبحد ٢٤٠٠٠ حرف */
+  const ctx = [];
+  let budget = 24000;
+  for(let i = S.history.length - 1; i >= 0 && ctx.length < 12; i--){
+    const m = S.history[i];
+    const c = String(m.content || "");
+    if(c.length > budget) break;
+    budget -= c.length;
+    ctx.unshift(m);
+  }
+  const card = cardFor(txt);
+  TEMP = card.t;
+  const messages = [{ role:"system", content: sysFor(g, txt) }, ...ctx];
+  const t0 = performance.now();
+
+  try{
+    let res;
+    const cap = g.mode === "team" ? Math.max(g.max, card.max) : g.max;
+    if(g.mode === "race") res = await runRace(g.pool, messages, cap, node, bd, who);
+    else                  res = await runTeam(messages, cap, bd, who);
+
+    /* ── أداة الحاسبة: لو النموذج طلب حساباً، نحسبه فعلياً ونعيد الجواب ── */
+    let finalText = res.text;
+    let calcs = [];
+    try{
+      calcs = runCalcs(res.text);
+      let forcedDone = false;
+
+      /* مسألة رياضية بلا علامات؟ نعيد الصياغة بعلامات إجبارية — لا حساب ذهني */
+      if(!calcs.length && card.k === "math"){
+        try{
+          const forced = await callRetry(
+            g.pool[0],
+            [
+              { role:"system", content:"أنت مصحّح حسابي. لا تحسب ذهنياً إطلاقاً." },
+              { role:"user", content: txt },
+              { role:"assistant", content: res.text },
+              { role:"user", content:
+                "أعد كتابة الجواب النهائي. القاعدة الوحيدة: كل عملية حسابية اكتبها بصيغة <<calc: التعبير >> " +
+                "ولا تحسبها بنفسك أبداً. استخدم الأرقام من السؤال. بلا شرح إضافي وبلا ذكر للأداة." },
+            ],
+            Math.min(g.max, 1800), null, null, 40000
+          );
+          if(forced && forced.text.trim()){
+            const c2 = runCalcs(forced.text);
+            if(c2.length){ calcs = c2; res.text = forced.text; forcedDone = true; }
+          }
+        }catch{}
+      }
+
+      if(calcs.length){
+        const usable = calcs.filter(c => c.value !== null);
+        if(usable.length && !forcedDone){
+          const list = usable.map(c => `- ${c.expr} = ${c.value}`).join("\n");
+          const fixed = await callRetry(
+            g.mode === "race" ? g.pool[0] : g.pool[0],
+            [
+              { role:"system", content: sysFor(g, txt) },
+              { role:"user", content: txt },
+              { role:"assistant", content: res.text },
+              { role:"user", content:
+                `هذه نتائج الحسابات الدقيقة (محسوبة آلياً، لا تعترض عليها):\n${list}\n\n` +
+                "أعد كتابة الجواب النهائي مستخدماً هذه الأرقام بالضبط. لا تذكر أن هناك حسابات أو أدوات. نفس التنسيق والطول." },
+            ],
+            Math.min(g.max, 2200), null, null, 45000
+          );
+          if(fixed && fixed.text.trim()) finalText = fixed.text;
+        }
+        finalText = fillCalcs(finalText, calcs);
+      }
+    }catch{ finalText = fillCalcs(res.text, calcs); }
+
+    revealFinal(bd, finalText);
+    S.history.push({ role:"assistant", content: finalText });
+    saveHist();
+
+    node.appendChild(exportBar({ question: txt, text: finalText, model: g.id }));
+    try{ if(calcs.length){ const cb = calcBadge(calcs); if(cb) node.appendChild(cb); } }catch{}
+    try{ const vb = verifyBadge(verifyBlocks(finalText), txt); if(vb) node.appendChild(vb); }catch{}
+
+    const ms = (performance.now() - t0) / 1000;
+    who.innerHTML = `<span class="nm">${esc(g.id)}</span><span>${ms.toFixed(1)}s</span>`;
+  }catch(err){
+    if(err.name === "AbortError" || S.stopped){
+      bd.innerHTML = '<p style="color:#8a8a8a">تعذر — تمت المقاطعة</p>';
+    } else {
+      /* لا نحذف سؤال المستخدم — نعرض خطأ + زر إعادة */
+      S.history.pop();               /* نشيل سؤاله من السياق فقط */
+      bd.innerHTML = `<p style="color:#e79a9a">تعذّر — ${esc(err.message)}</p>`;
+      const retry = document.createElement("button");
+      retry.className = "retry";
+      retry.textContent = "إعادة المحاولة";
+      retry.onclick = ()=>{
+        /* لا تحذف شيئاً — سؤال المستخدم أُزيل أصلاً في catch */
+        ta.value = txt;
+        ta.dispatchEvent(new Event("input"));
+        node.remove();
+        $("#form").requestSubmit();
+      };
+      bd.appendChild(retry);
+    }
+  }finally{
+    S.busy = false; S.stopped = false; setSendMode(false); S.aborter = null;
+  }
+};
+
+/* زر الإرسال يتحوّل إلى إيقاف أثناء العمل */
+const ICON_SEND = $("#send").innerHTML;
+const ICON_STOP = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 7h10v10H7z"/></svg>`;
+function setSendMode(busy){
+  const b = $("#send");
+  b.innerHTML = busy ? ICON_STOP : ICON_SEND;
+  b.title = busy ? "إيقاف" : "إرسال";
+  b.dataset.stop = busy ? "1" : "";
+}
+
+/* ══ أزرار صغيرة ══ */
+$("#send").addEventListener("click", e=>{
+  if(S.busy && S.aborter){
+    e.preventDefault(); e.stopPropagation();
+    S.stopped = true;
+    try{ S.aborter.abort(); }catch{}
+  }
+}, true);
+
+$("#btnMenu").onclick  = ()=> openConvs();
+/* ══════════ لوحة الوضع (التفكير العميق) ══════════ */
+function renderDeep(){
+  const on = DEEP;
+  const btn = $("#deepBtn"), row = $("#deepRow"), note = $("#deepNote");
+  if(!btn) return;
+  btn.setAttribute("aria-checked", on ? "true" : "false");
+  row.classList.toggle("on", on);
+  const g = activeGroup();
+  if(on){
+    note.textContent = g.mode === "team"
+      ? "مُشغّل — AY-3.1 يفكّر قبل الكتابة."
+      : "مُشغّل — لكن AY-3.0 سريع ولا يستخدمه. بدّل إلى AY-3.1 للاستفادة.";
+  }else{
+    note.textContent = "مُطفأ — ردود أسرع.";
+  }
+  /* مؤشر على الزر نفسه */
+  const apps = $("#btnApps");
+  if(apps) apps.classList.toggle("act", on);
+}
+
+function setDeep(v){
+  DEEP = !!v;
+  try{ localStorage.setItem("ayso.deep", DEEP ? "1" : "0"); }catch{}
+  renderDeep();
+  toast(DEEP ? "التفكير العميق: مُشغّل" : "التفكير العميق: مُطفأ");
+}
+
+$("#btnApps").onclick = ()=>{ renderDeep(); $("#apps").hidden = false; };
+$("#appsClose").onclick = ()=> { $("#apps").hidden = true; };
+$("#apps").onclick = e => { if(e.target.id === "apps") $("#apps").hidden = true; };
+$("#deepBtn").onclick = ()=> setDeep(!DEEP);
+
+/* ══════════ لوحة المحادثات ══════════ */
+function renderConvs(){
+  const box = $("#cvsList");
+  const all = readConvs();
+  box.innerHTML = "";
+  if(!all.length){
+    box.innerHTML = `<div class="cvs-empty">لا محادثات محفوظة بعد</div>`;
+    return;
+  }
+  all.forEach(c => {
+    const row = document.createElement("div");
+    row.className = "cvs-row" + (c.id === S.cid ? " on" : "");
+    const n = c.msgs.filter(m => m.role === "user").length;
+    row.innerHTML = `<div class="tx"><div class="tt">${esc(c.title)}</div>
+      <div class="dd">${n} رسالة · ${ago(c.ts)}</div></div>`;
+    const del = document.createElement("button");
+    del.className = "del"; del.textContent = "×";
+    del.onclick = e => {
+      e.stopPropagation();
+      writeConvs(readConvs().filter(x => x.id !== c.id));
+      if(c.id === S.cid){ S.history = []; S.cid = newCid(); saveHist(); }
+      renderConvs();
+    };
+    row.appendChild(del);
+    row.onclick = ()=> loadConv(c.id);
+    box.appendChild(row);
+  });
+}
+
+function ago(ts){
+  const m = Math.floor((Date.now() - ts) / 60000);
+  if(m < 1) return "الآن";
+  if(m < 60) return `قبل ${m} دقيقة`;
+  const h = Math.floor(m / 60);
+  if(h < 24) return `قبل ${h} ساعة`;
+  const d = Math.floor(h / 24);
+  return d === 1 ? "أمس" : `قبل ${d} يوم`;
+}
+
+const newCid = ()=> "c" + Date.now() + Math.random().toString(36).slice(2, 6);
+
+function loadConv(id){
+  const c = readConvs().find(x => x.id === id);
+  if(!c) return;
+  if(S.busy && S.aborter){ S.stopped = true; try{ S.aborter.abort(); }catch{} }
+  S.cid = id;
+  S.history = c.msgs.slice();
+  try{ localStorage.setItem("ayso.hist", JSON.stringify(S.history.slice(-40))); }catch{}
+  paintHistory();
+  closeConvs();
+}
+
+/* يرسم التاريخ كامل من جديد */
+function paintHistory(){
+  const box = $("#msgs");
+  box.innerHTML = "";
+  const hero = document.getElementById("hero");
+  if(hero){ hero.style.visibility = ""; hero.style.opacity = ""; }
+
+  if(!S.history.length){
+    showHero(true);
+    renderModel();
+renderDeep();
+    return;
+  }
+  showHero(false);
+
+  S.history.forEach(m => {
+    const d = document.createElement("div");
+    if(m.role === "user"){
+      d.className = "msg u";
+      d.innerHTML = `<div class="b">${esc(m.content)}</div>`;
+    }else{
+      d.className = "msg a";
+      d.innerHTML = `<div class="who">${esc(S.active)}</div><div class="bd">${md(m.content)}</div>`;
+      const q = [...S.history].slice(0, S.history.indexOf(m)).reverse().find(x => x.role === "user");
+      try{ d.appendChild(exportBar({ question: q ? q.content : "ayso", text: m.content, model: S.active })); }catch{}
+    }
+    box.appendChild(d);
+  });
+
+  const mm = $("#main");
+  requestAnimationFrame(()=>{ mm.scrollTop = mm.scrollHeight; });
+}
+
+function openConvs(){ renderConvs(); $("#convs").hidden = false; }
+function closeConvs(){ $("#convs").hidden = true; }
+
+
+$("#cvsClose").onclick = closeConvs;
+$("#convs").onclick = e => { if(e.target.id === "convs") closeConvs(); };
+$("#cvsNew").onclick = ()=>{ closeConvs(); $("#btnNew").click(); };
+
+/* إرفاق ملف نصي — يُقرأ محلياً بلا رفع */
+let ATTACH = null;
+$("#btnAttach").onclick = ()=> $("#fileIn").click();
+$("#fileIn").onchange = e => {
+  const f = e.target.files && e.target.files[0];
+  if(!f) return;
+  if(f.size > 400000){ toast("الملف كبير — الحد ٤٠٠ كيلوبايت"); e.target.value = ""; return; }
+  const rd = new FileReader();
+  rd.onload = ()=>{
+    ATTACH = { name: f.name, text: String(rd.result).slice(0, 30000) };
+    renderAttach();
+    toast("أُرفق: " + f.name);
+  };
+  rd.onerror = ()=> toast("تعذّرت قراءة الملف");
+  rd.readAsText(f);
+  e.target.value = "";
+};
+
+function renderAttach(){
+  const old = document.getElementById("achip");
+  if(old) old.remove();
+  if(!ATTACH) return;
+  const c = document.createElement("div");
+  c.id = "achip";
+  c.className = "achip";
+  c.innerHTML = `<span>📎 ${esc(ATTACH.name)} · ${(ATTACH.text.length/1000).toFixed(1)}k</span>`;
+  const x = document.createElement("button");
+  x.textContent = "×";
+  x.onclick = ()=>{ ATTACH = null; renderAttach(); };
+  c.appendChild(x);
+  $("#form").before(c);
+}
+
+$("#btnNew").onclick = ()=>{
+  if(S.busy && S.aborter){ S.stopped = true; try{ S.aborter.abort(); }catch{} }
+  upsertConv();                    /* احفظ الحالية قبل ما نمسح */
+  S.cid = newCid();
+  S.history = [];
+  saveHist();
+  $("#msgs").innerHTML = "";
+  const hero = document.getElementById("hero");
+  if(hero){ hero.style.visibility = ""; hero.style.opacity = ""; }
+  showHero(true);
+  toast("محادثة جديدة");
+};
+/* btnApps مربوط بلوحة الوضع أعلاه */
+$("#btnCopy").onclick  = ()=>{
+  const last = [...document.querySelectorAll(".msg.a .bd")].pop();
+  if(!last) return toast("لا يوجد نص");
+  navigator.clipboard?.writeText(last.innerText).then(
+    ()=> toast("نُسخ ✓"), ()=> toast("تعذّر النسخ"));
+};
+
+/* ══════════ تصدير الرد إلى ملف ══════════ */
+const EXP_ICON = {
+  pdf:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>`,
+  txt:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5"/><path d="M5 21h14"/></svg>`,
+  md:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 15V9l2.5 3L12 9v6M16 9v6"/></svg>`,
+};
+
+function exportBar(saved){
+  const w = document.createElement("div");
+  w.className = "exp";
+  w.innerHTML =
+    `<button data-x="pdf">${EXP_ICON.pdf}<span>PDF</span></button>` +
+    `<button data-x="txt">${EXP_ICON.txt}<span>نص</span></button>` +
+    `<button data-x="md">${EXP_ICON.md}<span>Markdown</span></button>`;
+  w.querySelectorAll("button").forEach(b=>{
+    b.onclick = ()=> exportAs(b.dataset.x, saved);
+  });
+  return w;
+}
+
+function slug(t){
+  return (t || "ayso").replace(/[\\/:*?"<>|]/g,"").trim().slice(0,40).replace(/\s+/g,"_") || "ayso";
+}
+
+function download(name, text, mime){
+  const blob = new Blob([text], { type: mime + ";charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+}
+
+function exportAs(kind, saved){
+  const title = slug(saved.question);
+  if(kind === "txt"){
+    download(title + ".txt", saved.text, "text/plain");
+    return toast("نُزّل ملف نصي ✓");
+  }
+  if(kind === "md"){
+    download(title + ".md", "# " + saved.question + "\n\n" + saved.text, "text/markdown");
+    return toast("نُزّل Markdown ✓");
+  }
+  /* PDF — عبر نافذة الطباعة (احفظ كـ PDF) */
+  const body = md(saved.text);
+  const html = `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<title>${esc(saved.question)}</title>
+<style>
+  @page{ size:A4; margin:18mm 16mm }
+  *{box-sizing:border-box}
+  body{font-family:"Segoe UI","Noto Naskh Arabic",Tahoma,sans-serif;color:#111;
+       line-height:1.85;font-size:13.5px;margin:0}
+  h1{font-size:20px;margin:0 0 4px;line-height:1.4}
+  .meta{font-size:11px;color:#777;border-bottom:1px solid #ddd;padding-bottom:8px;margin-bottom:18px;
+        display:flex;justify-content:space-between}
+  h2{font-size:16px;margin:18px 0 8px}
+  h3,h4{font-size:14px;margin:14px 0 6px}
+  p{margin:9px 0}
+  ul,ol{margin:9px 20px 9px 0}
+  li{margin:4px 0}
+  code{background:#f2f2f2;padding:1px 5px;border-radius:4px;font-family:Consolas,monospace;
+       font-size:.9em;direction:ltr;display:inline-block}
+  pre{background:#f6f6f6;border:1px solid #e5e5e5;border-radius:8px;padding:11px;overflow:hidden;
+      direction:ltr;text-align:left;font-size:11.5px;white-space:pre-wrap;word-break:break-word}
+  pre code{background:none;padding:0;display:block;white-space:pre-wrap}
+  blockquote{border-right:3px solid #ddd;padding:2px 12px;color:#555;margin:10px 0}
+  hr{border:0;border-top:1px solid #e5e5e5;margin:16px 0}
+  .cbx{margin:12px 0;border:1px solid #e5e5e5;border-radius:8px;overflow:hidden}
+  .cbx .hd{background:#f6f6f6;padding:5px 10px;font-size:10px;color:#777;
+           font-family:monospace;direction:ltr;border-bottom:1px solid #eee}
+  .cbx .cbtn{display:none}
+  .cbx pre{border:0;border-radius:0;margin:0}
+  .tw{overflow:visible;border:1px solid #ddd;border-radius:6px;margin:12px 0}
+  .tw table{width:100%;border-collapse:collapse;font-size:10.5px}
+  .tw th,.tw td{border:1px solid #e5e5e5;padding:5px 7px;text-align:right;white-space:normal}
+  .tw th{background:#f6f6f6}
+  strong{font-weight:700}
+  footer{margin-top:22px;border-top:1px solid #eee;padding-top:8px;font-size:10px;color:#999;
+         text-align:center}
+</style></head><body>
+<h1>${esc(saved.question)}</h1>
+<div class="meta"><span>ayso.ai · ${esc(saved.model||"AY-3.0")}</span><span>${new Date().toLocaleDateString("ar-IQ")}</span></div>
+${body}
+<footer>تم إنشاؤه بواسطة ayso.ai</footer>
+</body></html>`;
+
+  const w = window.open("", "_blank");
+  if(!w){ toast("اسمح بالنوافذ المنبثقة"); return; }
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  setTimeout(()=>{ try{ w.print(); }catch{} }, 500);
+  toast("اختر «حفظ كـ PDF»");
+}
+
+/* نسخ الكود */
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".cbtn");
+  if(!btn) return;
+  const code = btn.closest(".cbx")?.querySelector("code");
+  if(!code) return;
+  const txt = code.innerText;
+  const done = ()=>{
+    const lbl = btn.querySelector("span");
+    const old = lbl.textContent;
+    btn.classList.add("ok"); lbl.textContent = "نُسخ ✓";
+    setTimeout(()=>{ btn.classList.remove("ok"); lbl.textContent = old; }, 1600);
+  };
+  if(navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(fallback);
+  } else fallback();
+  function fallback(){
+    const ta2 = document.createElement("textarea");
+    ta2.value = txt; ta2.style.position="fixed"; ta2.style.opacity="0";
+    document.body.appendChild(ta2); ta2.select();
+    try{ document.execCommand("copy"); done(); }catch{ toast("تعذّر النسخ"); }
+    document.body.removeChild(ta2);
+  }
+});
+
+/* استرجاع المحادثة المحفوظة */
+(function restore(){
+  /* آخر محادثة محفوظة تحتل الصدارة */
+  const all = readConvs();
+  if(all.length && !S.history.length){
+    S.cid = all[0].id;
+    S.history = all[0].msgs.slice();
+  }
+  if(!S.history.length) return;
+  showHero(false);
+  const box = $("#msgs");
+  S.history.forEach(m=>{
+    const d = document.createElement("div");
+    if(m.role === "user"){
+      d.className = "msg u"; d.innerHTML = `<div class="b">${esc(m.content)}</div>`;
+    } else {
+      d.className = "msg a";
+      d.innerHTML = `<div class="who">${esc(S.active)}</div><div class="bd">${md(m.content)}</div>`;
+      const q = [...S.history].slice(0, S.history.indexOf(m))
+        .reverse().find(x => x.role === "user");
+      try{ d.appendChild(exportBar({ question: q ? q.content : "ayso", text: m.content, model: S.active })); }
+      catch{}
+    }
+    box.appendChild(d);
+  });
+  /* آخر رسالة بلا رد؟ اعرض زر إعادة المحاولة */
+  const last = S.history[S.history.length - 1];
+  if(last && last.role === "user"){
+    const wrap = document.createElement("div");
+    wrap.className = "msg a";
+    wrap.innerHTML = `<div class="who">${esc(S.active)}</div>`;
+    const b = document.createElement("button");
+    b.className = "retry";
+    b.textContent = "إعادة المحاولة";
+    b.onclick = ()=>{
+      /* السؤال موجود في الذاكرة — لا تحذفه */
+      const q = last;
+      wrap.remove();
+      ta.value = q.content;
+      ta.dispatchEvent(new Event("input"));
+      $("#form").requestSubmit();
+    };
+    wrap.appendChild(b);
+    box.appendChild(wrap);
+  }
+
+  const mm = $("#main"); requestAnimationFrame(()=>{ mm.scrollTop = mm.scrollHeight; });
+})();
+
+if(!S.history.length) showHero(true);
+
+if(IS_PREVIEW){
+  const b = document.getElementById("pvbar");
+  if(b) b.style.display = "block";
+}
+
+renderModel();
+renderDeep();
+
+</script>
+</body>
+</html>
