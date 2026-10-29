@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: ayso
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: AYSO_KEY
+        sync: false
+      - key: AYSO_PASS
+        sync: false
+      - key: AYSO_TERM_PASS
+        sync: false
+      - key: AYSO_RPM
+        value: "30"
+      - key: AYSO_DAILY
+        value: "800"
+      - key: AYSO_MAXTOK
+        value: "4000"
